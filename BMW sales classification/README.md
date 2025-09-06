@@ -1,3 +1,19 @@
+title: BMW sales classification
+this dataset includes information about bmw car sales such as region, price, color, and sales volume.
+the dataset contains 50,000 rows and 11 columns. the target column for classification is sales classification, which has two classes: high and low. class low represents 70% of the data, while class high represents the remaining 30%. this indicates some imbalance between the classes, but it is still manageable.
+step1:during the initial exploration, no outliers or missing values were found. some columns were categorical, requiring preprocessing. unique values were also checked to see if ordinal encoding was needed, but since no logical order existed, one-hot encoding was chosen. a groupby analysis was performed to calculate feature averages with respect to the target, followed by a heatmap. the heatmap showed a very strong relationship between the sales volume column and the sales classification column compared to other features.
+step 2: data preprocessing
+x and y were defined, then the data was split into train and test sets using stratify to maintain class distribution. transformations were fitted on x_train and applied to x_test to avoid data leakage. label encoding was applied to y_train and y_test. columntransformer was used to manage scaling and encoding, which was later integrated into a pipeline.
+step 3: modeling and evaluation
+several classification algorithms were tested without hyperparameter tuning to get baseline results. svm, naive bayes, and logistic regression showed excellent performance, while other models suffered from overfitting or weak results.
+for svm, hyperparameter tuning was done using a sample of the data due to the dataset size and svm’s computational cost. the best parameters were gamma=0.1 and c=10, with rbf kernel since the relationship between features was mostly nonlinear. class weight=balanced was used to handle the class imbalance. test results were: accuracy=0.9891, precision=0.9893, recall=0.9891, f1=0.9891. the confusion matrix showed tn=3024 corrected (high), fp=34 false (high), fn=10 false (low), tp=6941 corrected (low). this means errors were very few across both classes, with svm performing slightly better on class low.
+naive bayes achieved even higher accuracy than svm, though the difference was minimal. the confusion matrix showed naive bayes was slightly stronger in classifying class high. the roc curve for class low showed a smooth upward trend and clear separation from the random guess line, confirming model strength.
+an artificial neural network (ann) was also built with 4 layers: 3 hidden layers and 1 output layer with sigmoid activation for binary classification. l2 regularization and dropout were applied to reduce overfitting. adam optimizer was used for optimization, and early stopping was applied to halt training at the best point. the roc curve and confusion matrix both showed excellent results for ann across both classes.
+step 4: interpretation of results
+results indicate that naive bayes is powerful, fast, and suitable for large datasets like this one, and it will likely continue to perform well as the data grows. however, if the number of features increases and relationships become more complex, ann would be the better choice.
+to confirm model stability, stratified 5-fold cross-validation was performed, showing consistent performance across folds with near-zero standard deviation, proving strong generalization.
+finally, permutation importance analysis was conducted to understand feature influence. results confirmed the earlier heatmap insight that sales volume is by far the most important feature, playing a major role in the model’s strength. keeping this feature in future datasets is crucial for maintaining high performance.
+step6:
 creating api by fast api
 this api taked the nb-pipline 
 then predict raw data 
